@@ -27,21 +27,25 @@ public class ServerService {
 	public ServerRepository serverRepository;
 
 	
-	public Server createServer() {
+	public Server createServer(int size) {
 
 		Server server = new Server();
 		stateMachine.start();
 		stateMachine.sendEvent("wait");
-		if (stateMachine.getState().getId() == "active") {
+		if (stateMachine.getState().getId() == "create") {    // to make sure that the first request will allocate the memory first
 			LocalDateTime myObj = LocalDateTime.now();
 			Key key = new Key("test", "test", myObj.toString());
 			server.setKey(Buffer.bytesToHexString(key.digest));
 			server.setName("New");
 			server.setRam(100);
-			server.setFreeMemory(100);
+			server.setFreeMemory(100-size);
 			serverRepository.save(server);
+				
 		}
-		return server;
+		if (stateMachine.getState().getId() == "active") {
+			return server;
+		}
+		return null;
 	}
 
 	public List<Server> getAllServers() {
@@ -61,10 +65,25 @@ public class ServerService {
 
 		} else {
 
-			server = createServer();
-			server.setFreeMemory(100 - size);
-			serverRepository.save(server);
-
+			if (stateMachine.getState().getId() == "create") {  // if another request come while creating a new one and there is already no space it will wait to make sure that the new server may have space too 
+				
+				while(true) {
+					if (stateMachine.getState().getId() == "active") {
+						Server LastCreatedServer = serverRepository.findByFreeMemoryGreaterThanEqual(size); // new server still have space or not ? 
+						if (server != null) {
+							server.setFreeMemory(server.getFreeMemory() - size);
+							serverRepository.save(server);
+							break;
+						}
+						else {			
+							server = createServer(size);
+							server.setFreeMemory(100 - size);
+							serverRepository.save(server);
+						}					
+					}					
+				}				
+			}
+			
 		}
 
 		return server;

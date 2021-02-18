@@ -26,9 +26,11 @@ public class SimpleStateMachineConfiguration
           .initial("create").stateEntry("create", new Action<String,String>(){
 
 			@Override
-			public void execute(StateContext<String, String> context) {
+			public void execute(StateContext<String,String > context  ) {
 			
 				try {
+					
+					
 					TimeUnit.SECONDS.sleep(20);
 					System.out.println("Inside create");
 				} catch (InterruptedException e) {
@@ -37,6 +39,8 @@ public class SimpleStateMachineConfiguration
 				}
 			
 			}
+			
+		
         	  
           })
           .end("active");
