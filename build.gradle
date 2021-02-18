@@ -1,0 +1,36 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'io.havabrains'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+ compile group: 'org.springframework.statemachine', name: 'spring-statemachine-core', version: '2.4.0'
+ compile group: 'com.aerospike', name: 'aerospike-client', version: '5.0.3'
+	compile group: 'com.aerospike', name: 'spring-data-aerospike', version: '2.4.2.RELEASE'
+	compile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.27.Final'
+    implementation 'org.springframework.statemachine:spring-statemachine-core:1.2.3.RELEASE'
+	
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+	useJUnitPlatform()
+}
