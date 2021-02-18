@@ -84,6 +84,11 @@ public class ServerService {
 						}					
 					}					
 				}				
+			}else {
+				
+				server = createServer(size);
+				server.setFreeMemory(100 - size);
+				serverRepository.save(server);
 			}
 			
 		}
