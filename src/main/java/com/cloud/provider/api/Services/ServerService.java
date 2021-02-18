@@ -51,7 +51,7 @@ public class ServerService {
 		return servers;
 	}
 
-	
+	@Transactional(isolation = Isolation.SERIALIZABLE)
 	public Server allocateServer(int size) {
 
 		Server server = serverRepository.findByFreeMemoryGreaterThanEqual(size);
