@@ -26,11 +26,11 @@ public class Controller {
 	@Autowired
 	public ServerService serverService;
 
-	@GetMapping("create")
+	/*@GetMapping("create")
 	public Server createServer() {
 
 		return serverService.createServer(10);
-	}
+	}*/
 
 	@GetMapping("servers")
 	public List<Server> getAllServers() {
