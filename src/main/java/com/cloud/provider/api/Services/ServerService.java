@@ -71,9 +71,9 @@ public class ServerService {
 				while(true) {
 					if (stateMachine.getState().getId() == "active") {
 						Server LastCreatedServer = serverRepository.findByFreeMemoryGreaterThanEqual(size); // new server still have space or not ? 
-						if (server != null) {
-							server.setFreeMemory(server.getFreeMemory() - size);
-							serverRepository.save(server);
+						if (LastCreatedServer != null) {
+							LastCreatedServer.setFreeMemory(LastCreatedServer.getFreeMemory() - size);
+							serverRepository.save(LastCreatedServer);
 							break;
 						}
 						else {			
