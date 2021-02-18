@@ -80,6 +80,7 @@ public class ServerService {
 							server = createServer(size);
 							server.setFreeMemory(100 - size);
 							serverRepository.save(server);
+							break;
 						}					
 					}					
 				}				
