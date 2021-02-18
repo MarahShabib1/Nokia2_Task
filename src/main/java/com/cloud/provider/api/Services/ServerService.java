@@ -31,7 +31,7 @@ public class ServerService {
 
 		Server server = new Server();
 		stateMachine.start();
-		stateMachine.sendEvent("wait");
+		
 		if (stateMachine.getState().getId() == "create") {    // to make sure that the first request will allocate the memory first
 			LocalDateTime myObj = LocalDateTime.now();
 			Key key = new Key("test", "test", myObj.toString());
@@ -42,6 +42,7 @@ public class ServerService {
 			serverRepository.save(server);
 				
 		}
+		stateMachine.sendEvent("wait");
 		if (stateMachine.getState().getId() == "active") {
 			return server;
 		}
