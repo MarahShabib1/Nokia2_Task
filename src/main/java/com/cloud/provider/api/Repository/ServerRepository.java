@@ -11,7 +11,7 @@ import javax.persistence.LockModeType;
 public interface ServerRepository extends AerospikeRepository<Server, Integer> {
 
 	@Transactional(isolation = Isolation.SERIALIZABLE)
-    	Server findByFreeMemoryGreaterThanEqual(int size);
+    	Server findByFreeMemoryGreaterThanEqualAndState(int size, String state);
 
 		
 	

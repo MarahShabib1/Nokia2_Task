@@ -36,7 +36,7 @@ public class ServerService {
 			LocalDateTime myObj = LocalDateTime.now();
 			Key key = new Key("test", "test", myObj.toString());
 			server.setKey(Buffer.bytesToHexString(key.digest));
-			server.setName("New");
+			server.setState("create");
 			server.setRam(100);
 			server.setFreeMemory(100-size);
 			serverRepository.save(server);
@@ -59,35 +59,30 @@ public class ServerService {
 
 	public Server allocateServer(int size) {
 
-		Server server = serverRepository.findByFreeMemoryGreaterThanEqual(size);
-		if (server != null) {
+		Server server = serverRepository.findByFreeMemoryGreaterThanEqualAndState(size,"active");  // to make sure that the sever is not in creating state
+		if (server != null  ) {
 			server.setFreeMemory(server.getFreeMemory() - size);
 			serverRepository.save(server);
 
 		} else {
 
-			if (stateMachine.getState().getId() == "create") {  // if another request come while creating a new one and there is already no space it will wait to make sure that the new server may have space too 
-				
-				while(true) {
-					if (stateMachine.getState().getId() == "active") {
-						Server LastCreatedServer = serverRepository.findByFreeMemoryGreaterThanEqual(size); // new server still have space or not ? 
-						if (LastCreatedServer != null) {
-							LastCreatedServer.setFreeMemory(LastCreatedServer.getFreeMemory() - size);
-							serverRepository.save(LastCreatedServer);
-							break;
-						}
-						else {			
-							server = createServer(size);
-							break;
-						}					
-					}					
-				}				
-			}else {
-				
+			 server = serverRepository.findByFreeMemoryGreaterThanEqualAndState(size,"create");  // if another request come while creating a new one and there is already no space it will wait to make sure that the new server may have space too 
+			 if (server != null  ) {
+				 server.setFreeMemory(server.getFreeMemory() - size);
+			 	serverRepository.save(server);
+				 while(true) {
+					 if(server.getState()=="active") {
+						break;	 
+					 }
+				 }
+ 
+			 }else {
+				 
 				server = createServer(size);
-				
-			}
-			
+					
+			 }
+			 
+			 
 		}
 
 		return server;
